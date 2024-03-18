@@ -66,7 +66,7 @@ use std::{
 ///
 /// [ANSI color table]: https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 #[derive(Debug, Default, Clone, Copy, Eq, PartialEq, Hash)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum Color {
     /// Resets the foreground or background color
     #[default]
@@ -141,16 +141,26 @@ impl Color {
     }
 }
 
-#[cfg(feature = "serde")]
-impl<'de> serde::Deserialize<'de> for Color {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let s = String::deserialize(deserializer)?;
-        FromStr::from_str(&s).map_err(serde::de::Error::custom)
-    }
-}
+// #[cfg(feature = "serde")]
+// impl serde::Serialize for Color {
+//     fn serialize<D>(&self, serializer: S) -> Result<S::Ok, S::Error>
+//     where
+//         S: serde::Serializer,
+//     {
+//         serializer.serialize_str(&color.to_string());
+//     }
+// }
+
+// #[cfg(feature = "serde")]
+// impl<'de> serde::Deserialize<'de> for Color {
+//     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+//     where
+//         D: serde::Deserializer<'de>,
+//     {
+//         let s = String::deserialize(deserializer)?;
+//         FromStr::from_str(&s).map_err(serde::de::Error::custom)
+//     }
+// }
 
 /// Error type indicating a failure to parse a color string.
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
